@@ -23,6 +23,7 @@ load-dotenv = "^0.1.0"
 alembic = "^1.13.2"
 flake8 = "^7.1.1"
 black = "^24.10.0"
+strawberry-graphql = "^0.246.2"
 
 
 [build-system]
