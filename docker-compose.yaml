@@ -1,6 +1,6 @@
 services:
-  oauth_api:
-    container_name: oauth_api
+  oauth_graphql:
+    container_name: oauth_graphql
     depends_on:
       oauth_db:
         condition: service_healthy
@@ -8,10 +8,10 @@ services:
     volumes:
       - .:/code
     ports:
-      - 8080:8080
+      - 8000:8000
 
   oauth_db:
-    container_name: oauth_database
+    container_name: graphql_database
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root_password
@@ -20,7 +20,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - 33306:3306
+      - 33300:3300
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 1s

@@ -1,1 +1,1 @@
-# FastAPI_OAuth2
+# FastAPI_GraphQL
