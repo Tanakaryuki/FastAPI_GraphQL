@@ -29,3 +29,9 @@ remove-package:
 
 reset-db:
 	docker compose exec oauth_graphql python -m api.reset_db
+
+lint:
+	docker compose exec oauth_graphql poetry run flake8 api
+
+format:
+	docker compose exec oauth_graphql poetry run black api

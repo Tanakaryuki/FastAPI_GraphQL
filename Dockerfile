@@ -12,6 +12,8 @@ FROM python:3.12.4-slim-bookworm
 
 WORKDIR /code
 
+RUN pip install poetry
+
 COPY --from=requirements-stage /tmp/requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt

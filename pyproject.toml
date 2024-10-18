@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "oauth-api"
+name = "fastapi-graphql"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -21,6 +21,8 @@ bcrypt = "^4.0.1"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 load-dotenv = "^0.1.0"
 alembic = "^1.13.2"
+flake8 = "^7.1.1"
+black = "^24.10.0"
 
 
 [build-system]
