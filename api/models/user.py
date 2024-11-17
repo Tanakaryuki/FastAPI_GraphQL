@@ -1,8 +1,11 @@
+import strawberry
 from sqlalchemy import func, Column, String, Boolean, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from api.db import Base, generate_uuid
+from api.models.task import Task
 
 
+@strawberry.type
 class User(Base):
     __tablename__ = "Users"
 
@@ -19,6 +22,7 @@ class User(Base):
     refresh_tokens = relationship("RefreshToken", back_populates="user")
 
 
+@strawberry.type
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
 
