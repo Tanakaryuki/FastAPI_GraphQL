@@ -1,8 +1,10 @@
+import strawberry
 from sqlalchemy import func, Column, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from api.db import Base, generate_uuid
 
 
+@strawberry.type
 class Task(Base):
     __tablename__ = "Tasks"
 

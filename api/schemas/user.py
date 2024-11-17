@@ -34,3 +34,18 @@ class UserMutation:
             )
         except ValueError as e:
             return common_type.ErrorResponse(message=str(e))
+
+    @strawberry.mutation
+    def createToken(
+        self, user: user_type.UserLoginRequest, info: Info
+    ) -> user_type.UserLoginResponse | common_type.ErrorResponse:
+        db: Session = info.context["db"]
+        try:
+            token = user_service.create_token(db=db, current_user=user)
+            return user_type.UserLoginResponse(
+                access_token=token.access_token,
+                refresh_token=token.refresh_token,
+                token_type=token.token_type,
+            )
+        except ValueError as e:
+            return common_type.ErrorResponse(message=str(e))

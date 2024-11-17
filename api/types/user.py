@@ -26,3 +26,16 @@ class UserCreateResponse:
     is_admin: bool
     created_at: datetime
     updated_at: datetime
+
+
+@strawberry.input
+class UserLoginRequest:
+    username: str
+    password: str
+
+
+@strawberry.type
+class UserLoginResponse:
+    access_token: str
+    refresh_token: str
+    token_type: str
