@@ -35,7 +35,12 @@ class UserLoginRequest:
 
 
 @strawberry.type
-class UserLoginResponse:
+class UserTokenResponse:
     access_token: str
     refresh_token: str
     token_type: str
+
+
+@strawberry.input
+class UserRefreshTokenRequest:
+    refresh_token: str

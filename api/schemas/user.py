@@ -1,6 +1,5 @@
 import strawberry
 from sqlalchemy.orm import Session
-from fastapi import Depends
 import strawberry.exceptions
 from strawberry.types import Info
 
@@ -38,11 +37,26 @@ class UserMutation:
     @strawberry.mutation
     def createToken(
         self, user: user_type.UserLoginRequest, info: Info
-    ) -> user_type.UserLoginResponse | common_type.ErrorResponse:
+    ) -> user_type.UserTokenResponse | common_type.ErrorResponse:
         db: Session = info.context["db"]
         try:
             token = user_service.create_token(db=db, current_user=user)
-            return user_type.UserLoginResponse(
+            return user_type.UserTokenResponse(
+                access_token=token.access_token,
+                refresh_token=token.refresh_token,
+                token_type=token.token_type,
+            )
+        except ValueError as e:
+            return common_type.ErrorResponse(message=str(e))
+
+    @strawberry.mutation
+    def refreshToken(
+        self, refresh_token: str, info: Info
+    ) -> user_type.UserTokenResponse | common_type.ErrorResponse:
+        db: Session = info.context["db"]
+        try:
+            token = user_service.refresh_token(db=db, refresh_token=refresh_token)
+            return user_type.UserTokenResponse(
                 access_token=token.access_token,
                 refresh_token=token.refresh_token,
                 token_type=token.token_type,

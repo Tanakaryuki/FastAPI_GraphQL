@@ -26,21 +26,39 @@ def create_user(
 
 def create_token(
     db: Session, current_user: user_type.UserLoginRequest
-) -> user_type.UserLoginResponse:
-    user = user_crud.read_user_by_username(db, username=current_user.username)
+) -> user_type.UserTokenResponse | ValueError:
+    user = auth.authenticate_user(
+        db=db, username=current_user.username, password=current_user.password
+    )
     if not user:
-        raise ValueError("Invalid username or password")
-    if not auth.verify_password(current_user.password, user.hashed_password):
         raise ValueError("Invalid username or password")
     access_token = auth.create_access_token(data={"sub": user.username})
     refresh_token = auth.create_refresh_token(data={"sub": user.username})
-    user_crud.create_refresh_token(
-        db,
-        user_model.RefreshToken(
-            refresh_token=refresh_token, user_username=user.username
-        ),
+    if user_crud.exist_refresh_token_by_username(db=db, username=user.username):
+        user_crud.update_refresh_token(
+            db=db, username=user.username, refresh_token=refresh_token
+        )
+    else:
+        new_refresh_token = user_model.RefreshToken(
+            user_username=user.username, refresh_token=refresh_token
+        )
+        user_crud.create_refresh_token(db=db, refresh_token=new_refresh_token)
+    return user_type.UserTokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer",
     )
-    return user_type.UserLoginResponse(
+
+
+def refresh_token(
+    db: Session, refresh_token: str
+) -> user_type.UserTokenResponse | ValueError:
+    try:
+        auth.validate_refresh_token(db=db, refresh_token=refresh_token)
+    except ValueError as e:
+        raise ValueError(str(e))
+    access_token = auth.create_access_token(data={"sub": refresh_token})
+    return user_type.UserTokenResponse(
         access_token=access_token,
         refresh_token=refresh_token,
         token_type="bearer",
