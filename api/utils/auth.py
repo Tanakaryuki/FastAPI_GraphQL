@@ -53,32 +53,20 @@ def create_refresh_token(data: dict) -> str:
     return encoded_jwt
 
 
-def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> user_model.User:
+def get_current_user(db: Session, token: str) -> user_model.User | ValueError:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         exp = payload.get("exp")
         if username is None or exp is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
-            )
+            raise ValueError("Decoding failed")
         if datetime.now(timezone.utc) > datetime.fromtimestamp(exp, timezone.utc):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
-            )
+            raise ValueError("Token has expired")
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-        )
+        raise ValueError("Decoding failed")
     user = user_crud.read_user_by_username(db=db, username=username)
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not find user"
-        )
+        raise ValueError("User does not exist")
     return user
 
 

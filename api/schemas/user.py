@@ -6,6 +6,7 @@ from strawberry.types import Info
 import api.services.user as user_service
 import api.types.user as user_type
 import api.types.common as common_type
+import api.utils.auth as auth
 
 
 @strawberry.type
@@ -63,3 +64,26 @@ class UserMutation:
             )
         except ValueError as e:
             return common_type.ErrorResponse(message=str(e))
+
+
+@strawberry.type
+class UserQuery:
+    @strawberry.field
+    def me(
+        self, info: Info
+    ) -> user_type.UserInformationResponse | common_type.ErrorResponse:
+        db: Session = info.context["db"]
+        token: str = info.context["request"].headers.get("Authorization").split(" ")[1]
+        try:
+            current_user = auth.get_current_user(db=db, token=token)
+        except ValueError as e:
+            return common_type.ErrorResponse(message=str(e))
+        return user_type.UserInformationResponse(
+            uuid=current_user.uuid,
+            username=current_user.username,
+            email=current_user.email,
+            display_name=current_user.display_name,
+            is_admin=current_user.is_admin,
+            created_at=current_user.created_at,
+            updated_at=current_user.updated_at,
+        )

@@ -24,8 +24,6 @@ class UserCreateResponse:
     email: str
     display_name: str
     is_admin: bool
-    created_at: datetime
-    updated_at: datetime
 
 
 @strawberry.input
@@ -44,3 +42,14 @@ class UserTokenResponse:
 @strawberry.input
 class UserRefreshTokenRequest:
     refresh_token: str
+
+
+@strawberry.type
+class UserInformationResponse:
+    uuid: str
+    username: str
+    email: str
+    display_name: str
+    is_admin: bool
+    created_at: datetime
+    updated_at: datetime | None
