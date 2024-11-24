@@ -2,7 +2,6 @@ import strawberry
 from sqlalchemy import func, Column, String, Boolean, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from api.db import Base, generate_uuid
-from api.models.task import Task
 
 
 @strawberry.type
