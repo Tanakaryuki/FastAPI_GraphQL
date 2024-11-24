@@ -1,11 +1,5 @@
 import strawberry
 from datetime import datetime
-import strawberry.exceptions
-
-
-@strawberry.type
-class ErrorResponse:
-    message: str
 
 
 @strawberry.input
