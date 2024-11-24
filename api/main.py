@@ -7,6 +7,7 @@ import strawberry
 from strawberry.fastapi import GraphQLRouter
 
 from api.schemas.user import UserMutation, UserQuery
+from api.schemas.task import TaskMutation, TaskQuery
 from api.db import get_db
 
 app = FastAPI()
@@ -34,14 +35,14 @@ app.add_middleware(
 
 
 @strawberry.type
-class Query(UserQuery):
+class Query(UserQuery, TaskQuery):
     @strawberry.field
     def hello(self) -> str:
         return "Hello World"
 
 
 @strawberry.type
-class Mutation(UserMutation):
+class Mutation(UserMutation, TaskMutation):
     pass
 
 

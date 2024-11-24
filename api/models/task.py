@@ -1,15 +1,14 @@
 import strawberry
 from sqlalchemy import func, Column, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from api.db import Base, generate_uuid
+from api.db import Base
 
 
 @strawberry.type
 class Task(Base):
     __tablename__ = "Tasks"
 
-    uuid = Column(String(48), primary_key=True, default=generate_uuid, index=True)
-    id = Column(String(48), unique=True, nullable=False, index=True)
+    id = Column(String(48), primary_key=True, index=True)
     administrator_username = Column(
         String(48), ForeignKey("Users.username"), nullable=False, index=True
     )
