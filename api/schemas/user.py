@@ -29,8 +29,6 @@ class UserMutation:
                 email=created_user.email,
                 display_name=created_user.display_name,
                 is_admin=created_user.is_admin,
-                created_at=created_user.created_at,
-                updated_at=created_user.updated_at,
             )
         except ValueError as e:
             return common_type.ErrorResponse(message=str(e))
