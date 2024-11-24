@@ -1,6 +1,5 @@
 import strawberry
 from sqlalchemy.orm import Session
-import strawberry.exceptions
 from strawberry.types import Info
 
 import api.services.user as user_service
