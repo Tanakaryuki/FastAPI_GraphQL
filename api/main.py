@@ -6,18 +6,18 @@ from sqlalchemy.orm import Session
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 
-from api.schemas.user import UserMutation
+from api.schemas.user import UserMutation, UserQuery
 from api.db import get_db
 
 app = FastAPI()
 
 
-async def get_context(db: Session = Depends(get_db)):
-    return {"db": db}
+def get_context(request: Request, db: Session = Depends(get_db)):
+    return {"db": db, "request": request}
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+def validation_exception_handler(request: Request, exc: RequestValidationError):
     errors = exc.errors()
     return JSONResponse(
         status_code=400,
@@ -34,7 +34,7 @@ app.add_middleware(
 
 
 @strawberry.type
-class Query:
+class Query(UserQuery):
     @strawberry.field
     def hello(self) -> str:
         return "Hello World"
@@ -50,7 +50,7 @@ graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 
 @app.get("/")
-async def hello():
+def hello():
     return {"message": "Hello world"}
 
 
